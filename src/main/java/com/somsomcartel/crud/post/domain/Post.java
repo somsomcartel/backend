@@ -22,7 +22,7 @@ public class Post {
     @Column(nullable = false, length = 50)
     private String postTitle;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, length = 500)
     private String postText;
 
     @CreatedDate
