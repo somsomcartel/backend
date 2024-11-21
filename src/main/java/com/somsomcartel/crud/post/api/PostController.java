@@ -4,9 +4,12 @@ import com.somsomcartel.crud.global.common.ApiResponse;
 import com.somsomcartel.crud.post.application.PostService;
 import com.somsomcartel.crud.post.dto.PostRequestDto;
 import com.somsomcartel.crud.post.dto.PostResponseDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -19,7 +22,13 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/post")
-    public ResponseEntity<ApiResponse<?>> createPost(@ModelAttribute PostRequestDto postCreateReqDto) {
+    public ResponseEntity<ApiResponse<?>> createPost(@Valid @ModelAttribute PostRequestDto postCreateReqDto,
+                                                     BindingResult bindingResult) throws BindException {
+
+        if (bindingResult.hasErrors()) {
+            throw new BindException(bindingResult);
+        }
+
         postService.createPost(postCreateReqDto);
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .message("post create success")
@@ -44,8 +53,14 @@ public class PostController {
     }
 
     @PatchMapping("/post/{postId}")
-    public ResponseEntity<ApiResponse<?>> updatePost(@ModelAttribute PostRequestDto postCreateReqDto,
-                                                     @PathVariable("postId") Integer postId) {
+    public ResponseEntity<ApiResponse<?>> updatePost(@Valid @ModelAttribute PostRequestDto postCreateReqDto,
+                                                     BindingResult bindingResult,
+                                                     @PathVariable("postId") Integer postId) throws BindException {
+
+        if (bindingResult.hasErrors()) {
+            throw new BindException(bindingResult);
+        }
+
         postService.updatePost(postCreateReqDto, postId);
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .message("post update success")
