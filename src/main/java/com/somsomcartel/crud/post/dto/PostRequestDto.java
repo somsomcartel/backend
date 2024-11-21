@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PostCreateReqDto {
+public class PostRequestDto {
     private String postTitle;
     private String postText;
     private String postImage;

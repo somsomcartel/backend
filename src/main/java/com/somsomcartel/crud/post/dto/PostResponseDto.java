@@ -10,15 +10,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PostReadResDto {
+public class PostResponseDto {
     private String postTitle;
     private String postText;
     private LocalDateTime postTime;
     private String postImage;
     private String username;
 
-    public static PostReadResDto fromEntity(Post post) {
-        return PostReadResDto.builder()
+    public static PostResponseDto fromEntity(Post post) {
+        return PostResponseDto.builder()
                 .postTitle(post.getPostTitle())
                 .postText(post.getPostText())
                 .postTime(post.getPostTime())

@@ -2,8 +2,8 @@ package com.somsomcartel.crud.post.api;
 
 import com.somsomcartel.crud.global.common.ApiResponse;
 import com.somsomcartel.crud.post.application.PostService;
-import com.somsomcartel.crud.post.dto.PostCreateReqDto;
-import com.somsomcartel.crud.post.dto.PostReadResDto;
+import com.somsomcartel.crud.post.dto.PostRequestDto;
+import com.somsomcartel.crud.post.dto.PostResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/post")
-    public ResponseEntity<ApiResponse<?>> createPost(@ModelAttribute PostCreateReqDto postCreateReqDto) {
+    public ResponseEntity<ApiResponse<?>> createPost(@ModelAttribute PostRequestDto postCreateReqDto) {
         postService.createPost(postCreateReqDto);
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .message("post create success")
@@ -32,7 +32,7 @@ public class PostController {
 
     @GetMapping("/post")
     public ResponseEntity<ApiResponse<?>> readPost() {
-        List<PostReadResDto> postList = postService.readPost();
+        List<PostResponseDto> postList = postService.readPost();
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .data(postList)
                 .message("post read success")
@@ -44,7 +44,7 @@ public class PostController {
     }
 
     @PatchMapping("/post/{postId}")
-    public ResponseEntity<ApiResponse<?>> updatePost(@ModelAttribute PostCreateReqDto postCreateReqDto,
+    public ResponseEntity<ApiResponse<?>> updatePost(@ModelAttribute PostRequestDto postCreateReqDto,
                                                      @PathVariable("postId") Integer postId) {
         postService.updatePost(postCreateReqDto, postId);
         ApiResponse<?> apiResponse = ApiResponse.builder()
