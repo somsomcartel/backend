@@ -1,5 +1,6 @@
 package com.somsomcartel.crud.post.domain;
 
+import com.somsomcartel.crud.post.dto.PostCreateReqDto;
 import com.somsomcartel.crud.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -41,6 +42,12 @@ public class Post {
 
         this.user = user;
         user.getPostList().add(this);
+    }
+
+    public void updatePost(PostCreateReqDto postCreateReqDto) {
+        postTitle = postCreateReqDto.getPostTitle();
+        postText = postCreateReqDto.getPostText();
+        postImage = postCreateReqDto.getPostImage();
     }
 
     @Builder

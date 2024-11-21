@@ -42,4 +42,17 @@ public class PostController {
 
         return ResponseEntity.ok().body(apiResponse);
     }
+
+    @PatchMapping("/post/{postId}")
+    public ResponseEntity<ApiResponse<?>> updatePost(@ModelAttribute PostCreateReqDto postCreateReqDto,
+                                                     @PathVariable("postId") Integer postId) {
+        postService.updatePost(postCreateReqDto, postId);
+        ApiResponse<?> apiResponse = ApiResponse.builder()
+                .message("post update success")
+                .success(true)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.ok().body(apiResponse);
+    }
 }

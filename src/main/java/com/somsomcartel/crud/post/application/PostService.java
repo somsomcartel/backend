@@ -12,9 +12,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,5 +43,12 @@ public class PostService {
         return postList.stream()
                 .map(PostReadResDto::fromEntity)
                 .toList();
+    }
+
+    @Transactional
+    public void updatePost(PostCreateReqDto postCreateReqDto, Integer postId) {
+        Post post = postRepository.findById(postId).get();
+        // TODO: 로그인 작업 완료 후 검증 단계 추가
+        post.updatePost(postCreateReqDto);
     }
 }
