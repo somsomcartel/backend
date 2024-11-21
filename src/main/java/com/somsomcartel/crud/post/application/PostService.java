@@ -51,4 +51,10 @@ public class PostService {
         // TODO: 로그인 작업 완료 후 검증 단계 추가
         post.updatePost(postCreateReqDto);
     }
+
+    public void deletePost(Integer postId) {
+        Post post = postRepository.findById(postId).get();
+        // TODO: 로그인 작업 완료 후 검증 단계 추가
+        postRepository.delete(post);
+    }
 }
