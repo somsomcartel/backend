@@ -3,6 +3,7 @@ package com.somsomcartel.crud.post.application;
 import com.somsomcartel.crud.post.dao.PostRepository;
 import com.somsomcartel.crud.post.domain.Post;
 import com.somsomcartel.crud.post.dto.PostCreateReqDto;
+import com.somsomcartel.crud.post.dto.PostReadResDto;
 import com.somsomcartel.crud.user.dao.UserRepository;
 import com.somsomcartel.crud.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,5 +36,13 @@ public class PostService {
         Post post = postCreateReqDto.toEntity(user);
 
         postRepository.save(post);
+    }
+
+    public List<PostReadResDto> readPost() {
+        List<Post> postList =  postRepository.findAll();
+
+        return postList.stream()
+                .map(PostReadResDto::fromEntity)
+                .toList();
     }
 }
