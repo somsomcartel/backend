@@ -40,8 +40,8 @@ public class PostController {
     }
 
     @GetMapping("/post")
-    public ResponseEntity<ApiResponse<?>> readPost() {
-        List<PostResponseDto> postList = postService.readPost();
+    public ResponseEntity<ApiResponse<?>> readPost(@RequestParam(value = "page", defaultValue = "0") Integer page) {
+        List<PostResponseDto> postList = postService.readPost(page);
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .data(postList)
                 .message("post read success")

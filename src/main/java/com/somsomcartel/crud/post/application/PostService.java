@@ -7,6 +7,8 @@ import com.somsomcartel.crud.post.dto.PostResponseDto;
 import com.somsomcartel.crud.user.dao.UserRepository;
 import com.somsomcartel.crud.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +36,8 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public List<PostResponseDto> readPost() {
-        List<Post> postList =  postRepository.findAll();
+    public List<PostResponseDto> readPost(Integer page) {
+        Page<Post> postList =  postRepository.findAll(PageRequest.of(page, 10));
 
         return postList.stream()
                 .map(PostResponseDto::fromEntity)
