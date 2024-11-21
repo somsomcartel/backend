@@ -42,6 +42,11 @@ public class PostService {
                 .toList();
     }
 
+    public PostResponseDto readDetailPost(Integer postId) {
+        Post post =  postRepository.findById(postId).get();
+        return PostResponseDto.fromEntity(post);
+    }
+
     @Transactional
     public void updatePost(PostRequestDto postCreateReqDto, Integer postId) {
         Post post = postRepository.findById(postId).get();

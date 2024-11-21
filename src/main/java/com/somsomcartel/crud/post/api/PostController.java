@@ -52,6 +52,19 @@ public class PostController {
         return ResponseEntity.ok().body(apiResponse);
     }
 
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<ApiResponse<?>> readDetailPost(@PathVariable("postId") Integer postId) {
+        PostResponseDto post = postService.readDetailPost(postId);
+        ApiResponse<?> apiResponse = ApiResponse.builder()
+                .data(post)
+                .message("post read success")
+                .success(true)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.ok().body(apiResponse);
+    }
+
     @PatchMapping("/post/{postId}")
     public ResponseEntity<ApiResponse<?>> updatePost(@Valid @ModelAttribute PostRequestDto postCreateReqDto,
                                                      BindingResult bindingResult,
