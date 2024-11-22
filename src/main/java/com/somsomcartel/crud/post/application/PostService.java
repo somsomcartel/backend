@@ -4,8 +4,10 @@ import com.somsomcartel.crud.post.dao.PostRepository;
 import com.somsomcartel.crud.post.domain.Post;
 import com.somsomcartel.crud.post.dto.PostRequestDto;
 import com.somsomcartel.crud.post.dto.PostResponseDto;
+import com.somsomcartel.crud.post.exception.PostNotFoundException;
 import com.somsomcartel.crud.user.dao.UserRepository;
 import com.somsomcartel.crud.user.domain.User;
+import com.somsomcartel.crud.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,7 +31,7 @@ public class PostService {
         //User user = userRepository.findById(userId).get();
 
         // TODO: 로그인 작업 완료 후 삭제 예정
-        User user = userRepository.findById("asdf").get();
+        User user = userRepository.findById("asdf").orElseThrow(UserNotFoundException::new);
 
         Post post = postRequestDto.toEntity(user);
 
@@ -45,19 +47,19 @@ public class PostService {
     }
 
     public PostResponseDto readDetailPost(Integer postId) {
-        Post post =  postRepository.findById(postId).get();
+        Post post =  postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         return PostResponseDto.fromEntity(post);
     }
 
     @Transactional
     public void updatePost(PostRequestDto postRequestDto, Integer postId) {
-        Post post = postRepository.findById(postId).get();
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         // TODO: 로그인 작업 완료 후 검증 단계 추가
         post.updatePost(postRequestDto);
     }
 
     public void deletePost(Integer postId) {
-        Post post = postRepository.findById(postId).get();
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         // TODO: 로그인 작업 완료 후 검증 단계 추가
         postRepository.delete(post);
     }
