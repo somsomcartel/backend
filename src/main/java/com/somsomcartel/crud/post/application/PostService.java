@@ -23,7 +23,7 @@ public class PostService {
     //private final Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     @Transactional
-    public void createPost(PostRequestDto postCreateReqDto) {
+    public void createPost(PostRequestDto postRequestDto) {
 
         //String userId = jwt.getClaimAsString("sub");
         //User user = userRepository.findById(userId).get();
@@ -31,7 +31,7 @@ public class PostService {
         // TODO: 로그인 작업 완료 후 삭제 예정
         User user = userRepository.findById("asdf").get();
 
-        Post post = postCreateReqDto.toEntity(user);
+        Post post = postRequestDto.toEntity(user);
 
         postRepository.save(post);
     }
@@ -50,10 +50,10 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(PostRequestDto postCreateReqDto, Integer postId) {
+    public void updatePost(PostRequestDto postRequestDto, Integer postId) {
         Post post = postRepository.findById(postId).get();
         // TODO: 로그인 작업 완료 후 검증 단계 추가
-        post.updatePost(postCreateReqDto);
+        post.updatePost(postRequestDto);
     }
 
     public void deletePost(Integer postId) {

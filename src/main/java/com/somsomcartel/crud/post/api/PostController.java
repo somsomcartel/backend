@@ -22,14 +22,14 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/post")
-    public ResponseEntity<ApiResponse<?>> createPost(@Valid @ModelAttribute PostRequestDto postCreateReqDto,
+    public ResponseEntity<ApiResponse<?>> createPost(@Valid @ModelAttribute PostRequestDto postRequestDto,
                                                      BindingResult bindingResult) throws BindException {
 
         if (bindingResult.hasErrors()) {
             throw new BindException(bindingResult);
         }
 
-        postService.createPost(postCreateReqDto);
+        postService.createPost(postRequestDto);
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .message("post create success")
                 .success(true)
@@ -66,7 +66,7 @@ public class PostController {
     }
 
     @PatchMapping("/post/{postId}")
-    public ResponseEntity<ApiResponse<?>> updatePost(@Valid @ModelAttribute PostRequestDto postCreateReqDto,
+    public ResponseEntity<ApiResponse<?>> updatePost(@Valid @ModelAttribute PostRequestDto postRequestDto,
                                                      BindingResult bindingResult,
                                                      @PathVariable("postId") Integer postId) throws BindException {
 
@@ -74,7 +74,7 @@ public class PostController {
             throw new BindException(bindingResult);
         }
 
-        postService.updatePost(postCreateReqDto, postId);
+        postService.updatePost(postRequestDto, postId);
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .message("post update success")
                 .success(true)
