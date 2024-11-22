@@ -1,6 +1,5 @@
 package com.somsomcartel.crud.comment.domain;
 
-import com.somsomcartel.crud.comment.dto.CommentRequestDto;
 import com.somsomcartel.crud.user.domain.User;
 import com.somsomcartel.crud.post.domain.Post;
 import jakarta.persistence.*;
@@ -19,37 +18,31 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer commentId;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(nullable = false, length = 300)
     private String commentText;
 
-    @Column(updatable = false)
     @CreatedDate
     private LocalDateTime commentTime;
 
-    @ManyToOne
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId")
     private Post post;
 
-    @ManyToOne
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
 
     @Builder
-    public Comment(String commentText, Post post, User user) {
+    public Comment(String commentText, LocalDateTime commentTime, Post post, User user) {
         this.commentText = commentText;
+        this.commentTime = commentTime;
         this.post = post;
         this.user = user;
     }
 
-    public static Comment toEntity(CommentRequestDto commentRequestDto) {
-        return Comment.builder()
-                .commentText(commentRequestDto.getCommentText())
-                .post(commentRequestDto.getPost())
-                .user(commentRequestDto.getUser())
-                .build();
-    }
-
-    public void update(String commentText) {
+    public void updateComment(String commentText) {
         this.commentText = commentText;
     }
 }

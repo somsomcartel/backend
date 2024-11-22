@@ -1,44 +1,83 @@
 package com.somsomcartel.crud.comment.api;
 
 import com.somsomcartel.crud.comment.application.CommentService;
-import com.somsomcartel.crud.comment.dto.CommentEditRequestDto;
 import com.somsomcartel.crud.comment.dto.CommentRequestDto;
 import com.somsomcartel.crud.comment.dto.CommentResponseDto;
+import com.somsomcartel.crud.global.common.ApiResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/comment")
 public class CommentController {
     private final CommentService commentService;
 
-    /** 댓글 조회 */
     @GetMapping("/{postId}")
-    public List<CommentResponseDto> getCommentInPost(@PathVariable Integer postId) {
-        return commentService.findAll(postId);
+    public ResponseEntity<ApiResponse<?>> readComment(@PathVariable Integer postId, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+        List<CommentResponseDto> commentList = commentService.readComment(postId, page);
+
+        ApiResponse<?> apiResponse = ApiResponse.builder()
+                .data(commentList)
+                .message("comment read success")
+                .success(true)
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok().body(apiResponse);
     }
 
-    /** 댓글 입력 */
     @PostMapping("/{postId}")
-    public ResponseEntity<CommentResponseDto> commentPost(@PathVariable Integer postId, @RequestBody CommentRequestDto commentRequestDto,
-                                      @RequestParam("userName") String userName) {
-        CommentResponseDto commentResponseDto = commentService.save(commentRequestDto, postId, userName);
-        return ResponseEntity.ok(commentResponseDto);
+    public ResponseEntity<ApiResponse<?>> createComment(@Valid @ModelAttribute CommentRequestDto commentRequestDto,
+                                                        BindingResult bindingResult, @PathVariable String postId) throws BindException {
+        if (bindingResult.hasErrors()) {
+            throw new BindException(bindingResult);
+        }
+
+        commentService.createComment(commentRequestDto, Integer.parseInt(postId));
+
+        ApiResponse<?> apiResponse = ApiResponse.builder()
+                .message("comment create success")
+                .success(true)
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
-    /** 댓글 수정 */
     @PatchMapping("/{postId}/{commentId}")
-    public ResponseEntity<CommentResponseDto> commentEdit(@PathVariable Integer postId, @PathVariable Integer commentId, @RequestBody CommentEditRequestDto commentEditRequestDto) {
-        CommentResponseDto commentResponseDto = commentService.update(commentId, commentEditRequestDto);
-        return ResponseEntity.ok(commentResponseDto);
+    public ResponseEntity<ApiResponse<?>> updateComment(@PathVariable Integer commentId,
+                                                        @Valid @ModelAttribute CommentRequestDto commentRequestDto,
+                                                        BindingResult bindingResult) throws BindException {
+        if (bindingResult.hasErrors()) {
+            throw new BindException(bindingResult);
+        }
+
+        commentService.updateComment(commentId, commentRequestDto);
+
+        ApiResponse<?> apiResponse = ApiResponse.builder()
+                .message("comment update success")
+                .success(true)
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok().body(apiResponse);
     }
 
-    /** 댓글 삭제 */
     @DeleteMapping("/{postId}/{commentId}")
-    public ResponseEntity<Integer> commentDelete(@PathVariable Integer postId, @PathVariable Integer commentId) {
-        commentService.delete(postId, commentId);
-        return ResponseEntity.ok(commentId);
+    public ResponseEntity<ApiResponse<?>> deleteComment(@PathVariable Integer commentId) {
+        commentService.deleteComment(commentId);
+
+        ApiResponse<?> apiResponse = ApiResponse.builder()
+                .message("comment delete success")
+                .success(true)
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.ok().body(apiResponse);
     }
 }
