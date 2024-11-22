@@ -1,5 +1,6 @@
 package com.somsomcartel.crud.post.domain;
 
+import com.somsomcartel.crud.post.dto.PostRequestDto;
 import com.somsomcartel.crud.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -22,7 +23,7 @@ public class Post {
     @Column(nullable = false, length = 50)
     private String postTitle;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, length = 500)
     private String postText;
 
     @CreatedDate
@@ -41,6 +42,12 @@ public class Post {
 
         this.user = user;
         user.getPostList().add(this);
+    }
+
+    public void updatePost(PostRequestDto postCreateReqDto) {
+        postTitle = postCreateReqDto.getPostTitle();
+        postText = postCreateReqDto.getPostText();
+        postImage = postCreateReqDto.getPostImage();
     }
 
     @Builder
