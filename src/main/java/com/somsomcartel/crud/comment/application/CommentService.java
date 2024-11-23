@@ -29,7 +29,8 @@ public class CommentService {
 
     public void createComment(CommentRequestDto commentRequestDto, Integer postId) {
         // TODO: 로그인 정보에 따라 user 초기화
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        // User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById("userId").orElseThrow(UserNotFoundException::new);
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
         Comment comment = commentRequestDto.toEntity(post, user);

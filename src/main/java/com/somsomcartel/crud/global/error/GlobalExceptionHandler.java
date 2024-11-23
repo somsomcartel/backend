@@ -1,5 +1,6 @@
 package com.somsomcartel.crud.global.error;
 
+import com.somsomcartel.crud.comment.exception.CommentNotFoundException;
 import com.somsomcartel.crud.global.common.ApiResponse;
 import com.somsomcartel.crud.post.exception.PostNotFoundException;
 import com.somsomcartel.crud.user.exception.UserNotFoundException;
@@ -63,6 +64,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PostNotFoundException.class)
     public ResponseEntity<?> handlePostNotFoundException(PostNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(makeApiResponse(e.getErrorCode()));
+    }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<?> handleCommentNotFoundException(CommentNotFoundException e) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(makeApiResponse(e.getErrorCode()));

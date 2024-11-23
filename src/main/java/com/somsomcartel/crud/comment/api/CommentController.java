@@ -22,7 +22,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("/{postId}")
-    public ResponseEntity<ApiResponse<?>> readComment(@PathVariable Integer postId, @RequestParam(value = "page", defaultValue = "0") Integer page) {
+    public ResponseEntity<ApiResponse<?>> readComment(@PathVariable("postId") Integer postId, @RequestParam(value = "page", defaultValue = "0") Integer page) {
         List<CommentResponseDto> commentList = commentService.readComment(postId, page);
 
         ApiResponse<?> apiResponse = ApiResponse.builder()
@@ -36,12 +36,12 @@ public class CommentController {
 
     @PostMapping("/{postId}")
     public ResponseEntity<ApiResponse<?>> createComment(@Valid @ModelAttribute CommentRequestDto commentRequestDto,
-                                                        BindingResult bindingResult, @PathVariable String postId) throws BindException {
+                                                        BindingResult bindingResult, @PathVariable("postId") Integer postId) throws BindException {
         if (bindingResult.hasErrors()) {
             throw new BindException(bindingResult);
         }
 
-        commentService.createComment(commentRequestDto, Integer.parseInt(postId));
+        commentService.createComment(commentRequestDto, postId);
 
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .message("comment create success")
@@ -52,7 +52,7 @@ public class CommentController {
     }
 
     @PatchMapping("/{postId}/{commentId}")
-    public ResponseEntity<ApiResponse<?>> updateComment(@PathVariable Integer commentId,
+    public ResponseEntity<ApiResponse<?>> updateComment(@PathVariable("commentId") Integer commentId,
                                                         @Valid @ModelAttribute CommentRequestDto commentRequestDto,
                                                         BindingResult bindingResult) throws BindException {
         if (bindingResult.hasErrors()) {
@@ -70,7 +70,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{postId}/{commentId}")
-    public ResponseEntity<ApiResponse<?>> deleteComment(@PathVariable Integer commentId) {
+    public ResponseEntity<ApiResponse<?>> deleteComment(@PathVariable("commentId") Integer commentId) {
         commentService.deleteComment(commentId);
 
         ApiResponse<?> apiResponse = ApiResponse.builder()
