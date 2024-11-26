@@ -15,6 +15,9 @@ public class User {
     @Id
     private String userId;
 
+    @Column(nullable = false, length = 50)
+    private String username;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Post> postList = new ArrayList<>();
 }
