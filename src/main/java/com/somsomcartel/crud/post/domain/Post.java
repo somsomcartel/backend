@@ -51,7 +51,6 @@ public class Post {
     public void updatePost(PostRequestDto postCreateReqDto) {
         postTitle = postCreateReqDto.getPostTitle();
         postText = postCreateReqDto.getPostText();
-        postImage = postCreateReqDto.getPostImage();
     }
 
     @Builder
