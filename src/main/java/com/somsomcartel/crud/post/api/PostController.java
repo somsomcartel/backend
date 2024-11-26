@@ -1,7 +1,10 @@
 package com.somsomcartel.crud.post.api;
 
 import com.somsomcartel.crud.global.common.ApiResponse;
+import com.somsomcartel.crud.post.application.ImageService;
+import com.somsomcartel.crud.post.application.PostManageService;
 import com.somsomcartel.crud.post.application.PostService;
+import com.somsomcartel.crud.post.dto.ImageResponseDto;
 import com.somsomcartel.crud.post.dto.PostRequestDto;
 import com.somsomcartel.crud.post.dto.PostResponseDto;
 import jakarta.validation.Valid;
@@ -20,6 +23,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final PostManageService postManageService;
 
     @PostMapping("/post")
     public ResponseEntity<ApiResponse<?>> createPost(@Valid @ModelAttribute PostRequestDto postRequestDto,
@@ -29,7 +33,7 @@ public class PostController {
             throw new BindException(bindingResult);
         }
 
-        postService.createPost(postRequestDto);
+        postManageService.createPost(postRequestDto);
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .message("post create success")
                 .success(true)

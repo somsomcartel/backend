@@ -44,6 +44,10 @@ public class Post {
         user.getPostList().add(this);
     }
 
+    public void updatePostImage(String postImage) {
+        this.postImage = postImage;
+    }
+
     public void updatePost(PostRequestDto postCreateReqDto) {
         postTitle = postCreateReqDto.getPostTitle();
         postText = postCreateReqDto.getPostText();
