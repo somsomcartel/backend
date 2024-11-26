@@ -22,6 +22,7 @@ public class PostResponseDto {
                 .postTitle(post.getPostTitle())
                 .postText(post.getPostText())
                 .postTime(post.getPostTime())
+                .postImage(post.getPostImage())
                 .username(post.getUser().getUserId())
                 .build();
     }

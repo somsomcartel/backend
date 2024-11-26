@@ -25,7 +25,7 @@ public class PostService {
     //private final Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     @Transactional
-    public void createPost(PostRequestDto postRequestDto) {
+    public Integer createPost(PostRequestDto postRequestDto) {
 
         //String userId = jwt.getClaimAsString("sub");
         //User user = userRepository.findById(userId).get();
@@ -34,8 +34,9 @@ public class PostService {
         User user = userRepository.findById("asdf").orElseThrow(UserNotFoundException::new);
 
         Post post = postRequestDto.toEntity(user);
-
         postRepository.save(post);
+
+        return post.getPostId();
     }
 
     public List<PostResponseDto> readPost(Integer page) {

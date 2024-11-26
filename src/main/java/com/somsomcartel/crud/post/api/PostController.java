@@ -1,7 +1,10 @@
 package com.somsomcartel.crud.post.api;
 
 import com.somsomcartel.crud.global.common.ApiResponse;
+import com.somsomcartel.crud.post.application.ImageService;
+import com.somsomcartel.crud.post.application.PostManageService;
 import com.somsomcartel.crud.post.application.PostService;
+import com.somsomcartel.crud.post.dto.ImageResponseDto;
 import com.somsomcartel.crud.post.dto.PostRequestDto;
 import com.somsomcartel.crud.post.dto.PostResponseDto;
 import jakarta.validation.Valid;
@@ -20,6 +23,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final PostManageService postManageService;
 
     @PostMapping("/post")
     public ResponseEntity<ApiResponse<?>> createPost(@Valid @ModelAttribute PostRequestDto postRequestDto,
@@ -29,8 +33,9 @@ public class PostController {
             throw new BindException(bindingResult);
         }
 
-        postService.createPost(postRequestDto);
+        ImageResponseDto imageResponseDto = postManageService.createPost(postRequestDto);
         ApiResponse<?> apiResponse = ApiResponse.builder()
+                .data(imageResponseDto)
                 .message("post create success")
                 .success(true)
                 .timestamp(LocalDateTime.now())
@@ -54,7 +59,7 @@ public class PostController {
 
     @GetMapping("/post/{postId}")
     public ResponseEntity<ApiResponse<?>> readDetailPost(@PathVariable("postId") Integer postId) {
-        PostResponseDto post = postService.readDetailPost(postId);
+        PostResponseDto post = postManageService.readDetailPost(postId);
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .data(post)
                 .message("post read success")
@@ -74,8 +79,9 @@ public class PostController {
             throw new BindException(bindingResult);
         }
 
-        postService.updatePost(postRequestDto, postId);
+        ImageResponseDto imageResponseDto = postManageService.updatePost(postRequestDto, postId);
         ApiResponse<?> apiResponse = ApiResponse.builder()
+                .data(imageResponseDto)
                 .message("post update success")
                 .success(true)
                 .timestamp(LocalDateTime.now())
@@ -85,8 +91,8 @@ public class PostController {
     }
 
     @DeleteMapping("/post/{postId}")
-    public ResponseEntity<ApiResponse<?>> updatePost(@PathVariable("postId") Integer postId) {
-        postService.deletePost(postId);
+    public ResponseEntity<ApiResponse<?>> deletePost(@PathVariable("postId") Integer postId) {
+        postManageService.deletePost(postId);
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .message("post delete success")
                 .success(true)
