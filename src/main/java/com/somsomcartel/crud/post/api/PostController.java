@@ -1,10 +1,12 @@
 package com.somsomcartel.crud.post.api;
 
+import com.somsomcartel.crud.comment.application.CommentService;
+import com.somsomcartel.crud.comment.dto.CommentResponseDto;
 import com.somsomcartel.crud.global.common.ApiResponse;
-import com.somsomcartel.crud.post.application.ImageService;
 import com.somsomcartel.crud.post.application.PostManageService;
 import com.somsomcartel.crud.post.application.PostService;
 import com.somsomcartel.crud.post.dto.ImageResponseDto;
+import com.somsomcartel.crud.post.dto.PostCommentResponseDto;
 import com.somsomcartel.crud.post.dto.PostRequestDto;
 import com.somsomcartel.crud.post.dto.PostResponseDto;
 import jakarta.validation.Valid;
@@ -24,6 +26,7 @@ public class PostController {
 
     private final PostService postService;
     private final PostManageService postManageService;
+    private final CommentService commentService;
 
     @PostMapping("/post")
     public ResponseEntity<ApiResponse<?>> createPost(@Valid @ModelAttribute PostRequestDto postRequestDto,
@@ -58,10 +61,18 @@ public class PostController {
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<ApiResponse<?>> readDetailPost(@PathVariable("postId") Integer postId) {
+    public ResponseEntity<ApiResponse<?>> readDetailPost(@PathVariable("postId") Integer postId,
+                                                         @RequestParam(value = "page", defaultValue = "0") Integer page) {
         PostResponseDto post = postManageService.readDetailPost(postId);
+        List<CommentResponseDto> commentList = commentService.readComment(postId, page);
+
+        PostCommentResponseDto postCommentResponseDto = PostCommentResponseDto.builder()
+                .postResponseDto(post)
+                .commentList(commentList)
+                .build();
+
         ApiResponse<?> apiResponse = ApiResponse.builder()
-                .data(post)
+                .data(postCommentResponseDto)
                 .message("post read success")
                 .success(true)
                 .timestamp(LocalDateTime.now())
