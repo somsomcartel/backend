@@ -66,13 +66,29 @@ public class PostManageService {
 
         postService.updatePost(postRequestDto, postId);
 
-        String imageName = postRequestDto.getPostImage();
-        if(imageName != null) {
-            return imageService.createPutPresignedUrl(post.getPostImage());
+        String ImageName = generateNewImageName(postRequestDto.getPostImage(), post.getPostImage());
+        if(ImageName != null) {
+            post.updatePostImage(ImageName);
+            return imageService.createPutPresignedUrl(ImageName);
         }
 
         return null;
     }
+
+    private String generateNewImageName(String newImage, String currentImage) {
+        if(newImage == null) {
+            return null;
+        }
+
+        String newExtension = newImage.substring(newImage.lastIndexOf("."));
+
+        if(currentImage == null) {
+            return UUID.randomUUID().toString() + newExtension;
+        } else {
+            return currentImage.substring(0, currentImage.lastIndexOf(".")) + newExtension;
+        }
+    }
+
 
     @Transactional
     public void deletePost(Integer postId) {
