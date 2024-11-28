@@ -7,6 +7,9 @@ import com.somsomcartel.crud.post.dto.PostRequestDto;
 import com.somsomcartel.crud.post.dto.PostResponseDto;
 import com.somsomcartel.crud.post.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +24,14 @@ public class PostManageService {
 
     private final PostRepository postRepository;
 
+    //private final Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
     @Transactional
     public ImageResponseDto createPost(PostRequestDto postRequestDto) {
-        int postId = postService.createPost(postRequestDto);
+        //String userId = jwt.getClaimAsString("sub");
+        //int postId = postService.createPost(postRequestDto, userId);
+
+        int postId = postService.createPost(postRequestDto, "asdf");
 
         String imageName = postRequestDto.getPostImage();
         if(imageName != null) {
@@ -53,27 +61,52 @@ public class PostManageService {
 
     @Transactional
     public ImageResponseDto updatePost(PostRequestDto postRequestDto, Integer postId) {
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        //authenticate(post);
+
         postService.updatePost(postRequestDto, postId);
 
-        String imageName = postRequestDto.getPostImage();
-        if(imageName != null) {
-            return imageService.createPutPresignedUrl(postRepository.findById(postId)
-                    .orElseThrow(PostNotFoundException::new)
-                    .getPostImage()
-            );
+        String ImageName = generateNewImageName(postRequestDto.getPostImage(), post.getPostImage());
+        if(ImageName != null) {
+            post.updatePostImage(ImageName);
+            return imageService.createPutPresignedUrl(ImageName);
         }
 
         return null;
     }
 
+    private String generateNewImageName(String newImage, String currentImage) {
+        if(newImage == null) {
+            return null;
+        }
+
+        String newExtension = newImage.substring(newImage.lastIndexOf("."));
+
+        if(currentImage == null) {
+            return UUID.randomUUID().toString() + newExtension;
+        } else {
+            return currentImage.substring(0, currentImage.lastIndexOf(".")) + newExtension;
+        }
+    }
+
+
     @Transactional
     public void deletePost(Integer postId) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        //authenticate(post);
+
         if(post.getPostImage() != null) {
             imageService.deleteImage(post.getPostImage());
         }
 
         postService.deletePost(postId);
     }
+
+//    private void authenticate(Post post) {
+//        String userId = jwt.getClaimAsString("sub");
+//        if(!post.getUser().getUserId().equals(userId)) {
+//            throw new AccessDeniedException("access denied");
+//        }
+//    }
 
 }
